@@ -69,7 +69,7 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
     }
 
     // Ensure the train doesn't break apart (especially if other minecart mods increase speed)
-    @ModifyArg(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/AbstractMinecartEntity;getPos()Lnet/minecraft/util/math/Vec3d;", ordinal = 0))
+    @ModifyArg(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/VehicleEntity;move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", ordinal = 0))
     private Vec3d modifiedMovement(Vec3d movement) {// I may or may not be going insane HOLY SHIT IT WORKS
         if (this.lastMovementLength < movement.length()) { // I think it does at least, not sure if that was the vector they originally wanted
             final double targetMovementLength = movement.length(); // Lnet/minecraft/entity/vehicle/AbstractMinecartEntity;getPos()Lnet/minecraft/util/math/Vec3d;
