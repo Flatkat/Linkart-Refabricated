@@ -26,7 +26,7 @@ public class Linkart implements ModInitializer {
     public static final ConfigManager<LinkartConfiguration> CONFIG_MANAGER = ConfigManager.of(LinkartConfiguration.class, ID, LinkartConfiguration::new)
             .exceptionHandler((e, stage, path) -> LOGGER.error("Failed to {} {}", stage.name().toLowerCase(), FabricLoader.getInstance().getGameDir().relativize(path)));
     private static LinkartConfiguration CONFIG;
-    public static final TagKey<Item> LINKERS = TagKey.of(itemKey(), Identifier.of(ID, "linkers"));
+    public static final TagKey<Item> LINKERS = TagKey.of(itemKey(), Identifier.tryParse(ID, "linkers"));
 
     static {
         loadConfig();

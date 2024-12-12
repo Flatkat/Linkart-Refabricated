@@ -157,7 +157,7 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
     private void linkart$write(NbtCompound nbt, CallbackInfo ci) {
         if (linkart$followingUUID != null) nbt.putUuid("LK-Following", linkart$followingUUID);
         if (linkart$followerUUID != null) nbt.putUuid("LK-Follower", linkart$followerUUID);
-        if (linkart$itemStack != null) nbt.put("LK-ItemStack", linkart$itemStack.encodeAllowEmpty(this.getRegistryManager()));
+        if (linkart$itemStack != null) nbt.put("LK-ItemStack", linkart$itemStack.toNbtAllowEmpty(this.getRegistryManager()));
     }
 
     @Inject(at = @At("RETURN"), method = "readCustomDataFromNbt")
