@@ -29,4 +29,6 @@ public interface LinkableMinecart {
     default void linkart$setLinkItem(ItemStack linkItem) {
         throw new IllegalStateException("Implemented via mixin");
     }
+
+    void dropStack(ItemStack itemStack);
 }

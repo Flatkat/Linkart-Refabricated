@@ -2,13 +2,13 @@
 dark-matter = "4.0.0-1.20.1-build.481"
 
 [libraries]
-fabric-loader = { group = "net.fabricmc", name = "fabric-loader", version = "0.15.11" }
-fabric-api = { group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.99.4+1.20.6" }
+fabric-loader = { group = "net.fabricmc", name = "fabric-loader", version = "0.16.9" }
+fabric-api = { group = "net.fabricmc.fabric-api", name = "fabric-api", version = "0.111.0+1.21.4" }
 
 dark-matter-base = { group = "me.melontini", name = "dark-matter-base", version.ref = "dark-matter" }
 
 [plugins]
-fabric-loom = { id = "fabric-loom", version = "1.6.11" }
+fabric-loom = { id = "fabric-loom", version = "1.9.2" }
 lombok = { id = "io.freefair.lombok", version = "8.6"}
 spotbugs-base = { id = "com.github.spotbugs-base", version = "6.0.14" }
 spotless = { id = "com.diffplug.spotless", version = "6.25.0" }
