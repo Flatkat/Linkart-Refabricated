@@ -148,7 +148,6 @@ publishMods {
         projectId = "sc4Mu9Zu"
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         minecraftVersions.add("${project.minecraft_version}")
-        minecraftVersions.add("1.21")
 
         requires("fabric-api")
         embeds("dark-matter")
@@ -157,7 +156,6 @@ publishMods {
         projectId = "622736"
         accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
         minecraftVersions.add("${project.minecraft_version}")
-        minecraftVersions.add("1.21")
 
         requires("fabric-api")
         embeds("dark-matter")
