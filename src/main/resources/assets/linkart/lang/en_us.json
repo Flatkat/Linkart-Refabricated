@@ -1,0 +1,16 @@
+{
+  "linkart.midnightconfig.title": "Linkart",
+  "linkart.midnightconfig.category.linkart": "Linkart",
+  "linkart.midnightconfig.pathfindingDistance":"Pathfinding Distance",
+    "linkart.midnightconfig.pathfindingDistance.tooltip":"This is the maximum distance a cart will follow its parent for. Carts will break apart if their distance is greater.",
+  "linkart.midnightconfig.velocityMultiplier":"Velocity Multiplier",
+    "linkart.midnightconfig.velocityMultiplier.tooltip":"Multiplies the speed of the followers.",
+  "linkart.midnightconfig.collisionDepth":"Collision Depth",
+    "linkart.midnightconfig.collisionDepth.tooltip":"Controls the number of carts a linked cart will ignore collisions with. This works in both directions, so a cart in the middle will ignore <=16 collisions.",
+  "linkart.midnightconfig.distance":"Distance",
+    "linkart.midnightconfig.distance.tooltip":"The minimum spacing between carts.",
+  "linkart.midnightconfig.chunkloading":"Chunkloading",
+    "linkart.midnightconfig.chunkloading.tooltip":"Allow linked carts to load chunks as they move.",
+  "linkart.midnightconfig.chunkloadingRadius":"Chunkloading Radius",
+    "linkart.midnightconfig.chunkloadingRadius.tooltip":"The radius of chunks that a given cart can load."
+}
