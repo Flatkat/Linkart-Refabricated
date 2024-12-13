@@ -1,7 +1,7 @@
 package com.github.vini2003.linkart.mixin;
 
-import com.github.vini2003.linkart.Linkart;
 import com.github.vini2003.linkart.api.LinkableMinecart;
+import com.github.vini2003.linkart.configuration.LinkartConfiguration;
 import com.github.vini2003.linkart.utility.CartUtils;
 import com.github.vini2003.linkart.utility.CollisionUtils;
 import com.github.vini2003.linkart.utility.LoadingCarts;
@@ -111,9 +111,9 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
 
         Vec3d pos = getPos();
         Vec3d pos2 = linkart$getFollowing().getPos();
-        double dist = Math.max(Math.abs(pos.distanceTo(pos2)) - Linkart.getConfig().distance, 0);
+        double dist = Math.max(Math.abs(pos.distanceTo(pos2)) - LinkartConfiguration.distance, 0);
         Vec3d vec3d = pos.relativize(pos2);
-        vec3d = vec3d.multiply(Linkart.getConfig().velocityMultiplier);
+        vec3d = vec3d.multiply(LinkartConfiguration.velocityMultiplier);
 
         // Check if we are on a sharp curve
         Vec3d vel = getVelocity();
@@ -127,7 +127,7 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
 
         if (differentDirection) {
             // Keep ourselves going at same speed if on curve
-            dist += Linkart.getConfig().distance;
+            dist += LinkartConfiguration.distance;
             vec3d = vel;
         }
 
@@ -137,15 +137,15 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
         if (dist <= 1) {
             // Go slower (1.0->0.8) the closer (1->0) we are
             setVelocity(vec3d.multiply(0.8 + 0.2 * Math.abs(dist)));
-        } else if (dist <= Linkart.getConfig().pathfindingDistance) {
+        } else if (dist <= LinkartConfiguration.pathfindingDistance) {
             setVelocity(vec3d);
         } else {
             CartUtils.unlinkFromParent(cast);
         }
 
-        if (Linkart.getConfig().chunkloading) {
+        if (LinkartConfiguration.chunkloading) {
             if (linkart$getFollower() != null && !CartUtils.approximatelyZero(this.getVelocity().length())) {
-                ((ServerWorld) this.getWorld()).getChunkManager().addTicket(ChunkTicketType.PORTAL, this.getChunkPos(), Linkart.getConfig().chunkloadingRadius, this.getBlockPos());
+                ((ServerWorld) this.getWorld()).getChunkManager().addTicket(ChunkTicketType.PORTAL, this.getChunkPos(), LinkartConfiguration.chunkloadingRadius, this.getBlockPos());
                 LoadingCarts.getOrCreate((ServerWorld) getWorld()).addCart(cast);
             } else {
                 LoadingCarts.getOrCreate((ServerWorld) getWorld()).removeCart(cast);

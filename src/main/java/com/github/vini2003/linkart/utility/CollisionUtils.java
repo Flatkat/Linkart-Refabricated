@@ -1,6 +1,6 @@
 package com.github.vini2003.linkart.utility;
 
-import com.github.vini2003.linkart.Linkart;
+import com.github.vini2003.linkart.configuration.LinkartConfiguration;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 
@@ -16,7 +16,7 @@ public class CollisionUtils {
 
                 check = check.linkart$getFollower();
                 ++i;
-            } while (check != null && i < Linkart.getConfig().collisionDepth);
+            } while (check != null && i < LinkartConfiguration.collisionDepth);
 
             check = (AbstractMinecartEntity) source;
             i = 0;
@@ -24,7 +24,7 @@ public class CollisionUtils {
             while (check != target) {
                 check = check.linkart$getFollowing();
                 ++i;
-                if (check == null || i >= Linkart.getConfig().collisionDepth) {
+                if (check == null || i >= LinkartConfiguration.collisionDepth) {
                     return true;
                 }
             }

@@ -15,11 +15,11 @@ def local = !System.getenv().containsKey("GITHUB_RUN_NUMBER")
 version = "${project.mod_version}-${project.minecraft_version}-${local ? 'local' : "build.${System.getenv("GITHUB_RUN_NUMBER")}"}"
 group = project.maven_group
 
-apply from: "https://raw.githubusercontent.com/constellation-mc/artifacts/main/artifacts.groovy"
-constellationRepo(project, "dark-matter")
-
 repositories {
     mavenCentral()
+    maven {
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 dependencies {
@@ -30,8 +30,7 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation libs.fabric.api
-    modApi libs.dark.matter.base
-    include libs.dark.matter.base
+    modImplementation include ("maven.modrinth:midnightlib:${project.midnightlib_version}")
 }
 
 tasks.register("spotbugs", SpotBugsTask) { task ->
@@ -113,6 +112,7 @@ sourcesJar {
     from delombok
 }
 
+/*
 // configure the maven publication
 publishing {
     publications {
@@ -150,7 +150,7 @@ publishMods {
         minecraftVersions.add("${project.minecraft_version}")
 
         requires("fabric-api")
-        embeds("dark-matter")
+        embeds("midnightlib")
     }
     curseforge {
         projectId = "622736"
@@ -158,7 +158,7 @@ publishMods {
         minecraftVersions.add("${project.minecraft_version}")
 
         requires("fabric-api")
-        embeds("dark-matter")
+        embeds("midnightlib")
     }
     github {
         repository = "constellation-mc/Linkart"
@@ -170,3 +170,4 @@ publishMods {
 
     dryRun = local
 }
+*/

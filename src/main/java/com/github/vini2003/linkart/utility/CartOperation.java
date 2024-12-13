@@ -1,6 +1,7 @@
 package com.github.vini2003.linkart.utility;
 
-import com.github.vini2003.linkart.Linkart;
+
+import com.github.vini2003.linkart.configuration.LinkartConfiguration;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -13,7 +14,7 @@ public record CartOperation(Type type, AbstractMinecartEntity minecart) {
             public ActionResult perform(AbstractMinecartEntity minecart, CartOperation operation, ItemStack stack) {
                 if (minecart.linkart$getFollower() == operation.minecart()) return ActionResult.FAIL; //Linking a parent cart to its follower.
                 if (minecart.linkart$getFollowing() != null) return ActionResult.FAIL; //Linking to an already linked cart.
-                if (Math.abs(minecart.distanceTo(operation.minecart()) - 1) > Linkart.getConfig().pathfindingDistance)
+                if (Math.abs(minecart.distanceTo(operation.minecart()) - 1) > LinkartConfiguration.pathfindingDistance)
                     return ActionResult.FAIL; //Linking beyond pathfindingDistance, will just break on first tick.
 
                 //Leading minecarts must never be linked to a follower. This creates an immovable object or an Ouroboros, if you will.
