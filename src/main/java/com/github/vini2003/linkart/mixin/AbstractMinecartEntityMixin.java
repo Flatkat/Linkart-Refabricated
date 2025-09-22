@@ -21,6 +21,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+//? if >=1.21.6 {
+/*import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
+*///?}
 //? if =1.21.1 {
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -162,6 +166,7 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
         if (!CollisionUtils.shouldCollide(this, entity)) ci.cancel();
     }
 
+    //? if <1.21.6 {
     @Inject(at = @At("RETURN"), method = "writeCustomDataToNbt")
     private void linkart$write(NbtCompound nbt, CallbackInfo ci) {
         if (linkart$followingUUID != null) nbt./*? if >=1.21.5 {*//*put*//*?} else {*/putUuid/*?}*/("LK-Following"/*? if >=1.21.5 {*//*, Uuids.INT_STREAM_CODEC*//*?}*/, linkart$followingUUID);
@@ -181,6 +186,24 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
         if (nbt.contains("LK-ItemStack")) linkart$itemStack = ItemStack.fromNbtOrEmpty(this.getRegistryManager(), nbt.getCompound("LK-ItemStack"));
         /*?}*/
     }
+    //?} else {
+    /*@Inject(at = @At("RETURN"), method = "writeCustomData")
+    private void linkart$write(WriteView view, CallbackInfo ci) {
+        view.putNullable("LK-Following", Uuids.INT_STREAM_CODEC, linkart$followingUUID);
+        view.putNullable("LK-Follower", Uuids.INT_STREAM_CODEC, linkart$followerUUID);
+
+        if(!linkart$itemStack.isEmpty()) {
+            view.put("LK-ItemStack", ItemStack.CODEC, linkart$itemStack);
+        }
+    }
+
+    @Inject(at = @At("RETURN"), method = "readCustomData")
+    private void linkart$read(ReadView view, CallbackInfo ci) {
+        view.read("LK-Following", Uuids.INT_STREAM_CODEC).ifPresent(uuid -> linkart$followingUUID = uuid);
+        view.read("LK-Follower", Uuids.INT_STREAM_CODEC).ifPresent(uuid -> linkart$followerUUID = uuid);
+        linkart$itemStack = view.read("Item", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+    }
+    *///?}
 
     @Override
     public AbstractMinecartEntity linkart$getFollowing() {

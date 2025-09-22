@@ -43,20 +43,17 @@ tasks.register("spotbugs", SpotBugsTask) { task ->
         task.classDirs.from(task.classDirs.files, it.output)
         task.auxClassPaths.from(task.auxClassPaths.files, it.compileClasspath)
     }
-    excludeFilter = file("spotbugs.xml")
+    excludeFilter = rootProject.file("spotbugs.xml")
     ignoreFailures = true
     reports {
-        if (local) {
-            html {
-                required = true
-                outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
-                stylesheet = 'fancy-hist.xsl'
-            }
-        } else {
-            sarif {
-                required = true
-                outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.sarif")
-            }
+        html {
+            required = true
+            outputLocation = rootProject.file("${rootProject.buildDir}/reports/spotbugs/main/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+        sarif {
+            required = true
+            outputLocation = rootProject.file("${rootProject.buildDir}/reports/spotbugs/main/spotbugs.sarif")
         }
     }
 }
