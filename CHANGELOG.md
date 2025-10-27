@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Added support for 1.21.6-1.21.10
+- Updated Stonecutter to 0.7.10
+
 ## [6.1.1] - 2025-5-18
 
 ### Changed
