@@ -20,7 +20,7 @@ public abstract class EntityMixin {
 
     @Inject(at = @At("HEAD"), method = "remove")
     void linkart$removeLink(CallbackInfo callbackInformation, @Local(argsOnly = true) Entity.RemovalReason reason) {
-        if ((Entity) (Object) this instanceof AbstractMinecartEntity minecart && !minecart.getWorld().isClient() && reason.shouldDestroy()) {
+        if ((Entity) (Object) this instanceof AbstractMinecartEntity minecart && !minecart./*? if >=1.21.9 {*//*getEntityWorld()*//*?} else {*/getWorld()/*?}*/.isClient() && reason.shouldDestroy()) {
             CartUtils.unlinkFromParent(minecart);
             CartUtils.unlinkFromParent(minecart.linkart$getFollower());
         }
@@ -29,10 +29,10 @@ public abstract class EntityMixin {
     @Inject(at = @At("HEAD"), method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", cancellable = true)
     void linkart$onRecalculateVelocity(Vec3d movement, CallbackInfoReturnable<Vec3d> cir) {
         if ((Object) this instanceof AbstractMinecartEntity minecart) {
-            List<Entity> collisions = minecart.getWorld().getOtherEntities((Entity) (Object) this, minecart.getBoundingBox().stretch(movement));
+            List<Entity> collisions = minecart./*? if >=1.21.9 {*//*getEntityWorld()*//*?} else {*/getWorld()/*?}*/.getOtherEntities((Entity) (Object) this, minecart.getBoundingBox().stretch(movement));
 
             for (Entity entity : collisions) {
-                if (!CollisionUtils.shouldCollide(minecart, entity) && minecart.getWorld().getBlockState(minecart.getBlockPos()).getBlock() instanceof AbstractRailBlock) {
+                if (!CollisionUtils.shouldCollide(minecart, entity) && minecart./*? if >=1.21.9 {*//*getEntityWorld()*//*?} else {*/getWorld()/*?}*/.getBlockState(minecart.getBlockPos()).getBlock() instanceof AbstractRailBlock) {
                     cir.setReturnValue(movement);
                     return;
                 }

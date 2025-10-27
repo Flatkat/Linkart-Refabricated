@@ -113,12 +113,13 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
 
     @Inject(at = @At("HEAD"), method = "tick")
     private void linkart$tick(CallbackInfo ci) {
-        if (getWorld().isClient()) return;
+        World world = /*? if >=1.21.9 {*//*getEntityWorld()*//*?} else {*/getWorld()/*?}*/;
+        if (world.isClient()) return;
         AbstractMinecartEntity cast = (AbstractMinecartEntity) (Object) this;
         if (linkart$getFollowing() == null) return;
 
-        Vec3d pos = getPos();
-        Vec3d pos2 = linkart$getFollowing().getPos();
+        Vec3d pos = /*? if >=1.21.9 {*//*getEntityPos()*//*?} else {*/getPos()/*?}*/;
+        Vec3d pos2 = linkart$getFollowing()./*? if >=1.21.9 {*//*getEntityPos()*//*?} else {*/getPos()/*?}*/;
         double dist = Math.max(Math.abs(pos.distanceTo(pos2)) - LinkartConfiguration.distance, 0);
         Vec3d vec3d = pos.relativize(pos2);
         vec3d = vec3d.multiply(LinkartConfiguration.velocityMultiplier);
@@ -153,10 +154,10 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
 
         if (LinkartConfiguration.chunkloading) {
             if (linkart$getFollower() != null && !CartUtils.approximatelyZero(this.getVelocity().length())) {
-                ((ServerWorld) this.getWorld()).getChunkManager().addTicket(ChunkTicketType.PORTAL, this.getChunkPos(), LinkartConfiguration.chunkloadingRadius/*? if <1.21.5 {*/, this.getBlockPos()/*?}*/);
-                LoadingCarts.getOrCreate((ServerWorld) getWorld()).addCart(cast);
+                ((ServerWorld) world).getChunkManager().addTicket(ChunkTicketType.PORTAL, this.getChunkPos(), LinkartConfiguration.chunkloadingRadius/*? if <1.21.5 {*/, this.getBlockPos()/*?}*/);
+                LoadingCarts.getOrCreate((ServerWorld) world).addCart(cast);
             } else {
-                LoadingCarts.getOrCreate((ServerWorld) getWorld()).removeCart(cast);
+                LoadingCarts.getOrCreate((ServerWorld) world).removeCart(cast);
             }
         }
     }
@@ -208,7 +209,7 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
     @Override
     public AbstractMinecartEntity linkart$getFollowing() {
         if (linkart$following == null && linkart$followingUUID != null) {
-            linkart$following = (AbstractMinecartEntity) ((ServerWorld) this.getWorld()).getEntity(linkart$followingUUID);
+            linkart$following = (AbstractMinecartEntity) ((ServerWorld) this./*? if >=1.21.9 {*//*getEntityWorld()*//*?} else {*/getWorld()/*?}*/).getEntity(linkart$followingUUID);
         }
         return linkart$following;
     }
@@ -222,7 +223,7 @@ public abstract class AbstractMinecartEntityMixin extends Entity implements Link
     @Override
     public AbstractMinecartEntity linkart$getFollower() {
         if (linkart$follower == null && linkart$followerUUID != null) {
-            linkart$follower = (AbstractMinecartEntity) ((ServerWorld) this.getWorld()).getEntity(linkart$followerUUID);
+            linkart$follower = (AbstractMinecartEntity) ((ServerWorld) this./*? if >=1.21.9 {*//*getEntityWorld()*//*?} else {*/getWorld()/*?}*/).getEntity(linkart$followerUUID);
         }
         return linkart$follower;
     }

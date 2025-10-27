@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public class LinkartCommand {
 
-    private static final Supplier<Text> RELOADED = () -> TextUtil.literal("reloaded linkart config");
+    private static final Supplier<Text> RELOADED = () -> Text.literal("reloaded linkart config");
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("linkart")

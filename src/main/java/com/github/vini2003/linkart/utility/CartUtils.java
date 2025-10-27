@@ -5,12 +5,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
 
 public class CartUtils {
 
     public static void spawnChainParticles(AbstractMinecartEntity entity) {
-        if (!entity.getWorld().isClient()) {
-            ((ServerWorld) entity.getWorld()).spawnParticles(new ItemStackParticleEffect(ParticleTypes.ITEM, entity.linkart$getLinkItem()), entity.getX(), entity.getY() + 0.3, entity.getZ(), 15, 0.2, 0.2, 0.2, 0.2);
+        World world = entity./*? if >=1.21.9 {*//*getEntityWorld()*//*?} else {*/getWorld()/*?}*/;
+        if (!world.isClient()) {
+            ((ServerWorld) world).spawnParticles(new ItemStackParticleEffect(ParticleTypes.ITEM, entity.linkart$getLinkItem()), entity.getX(), entity.getY() + 0.3, entity.getZ(), 15, 0.2, 0.2, 0.2, 0.2);
         }
     }
 
@@ -29,10 +31,12 @@ public class CartUtils {
         entity.setVelocity(0, 0, 0);
 
         if (!entity.linkart$getLinkItem().isEmpty()) {
-            //? if =1.21.1
+            //? if >=1.21.9 {
+            /*entity.dropStack((ServerWorld) entity.getEntityWorld(), entity.linkart$getLinkItem());
+            *///?} elif >=1.21.4 {
+            /*entity.dropStack((ServerWorld) entity.getWorld(), entity.linkart$getLinkItem());
+            *///?} elif =1.21.1
             entity.dropStack(entity.linkart$getLinkItem());
-            //? if >=1.21.4
-            /*entity.dropStack((ServerWorld) entity.getWorld(), entity.linkart$getLinkItem());*/
             spawnChainParticles(entity);
         }
 

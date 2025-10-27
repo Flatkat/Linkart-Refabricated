@@ -31,7 +31,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Inject(at = @At("HEAD"), method = "interact", cancellable = true)
     void onInteract(Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         if (entity instanceof AbstractMinecartEntity minecart) {
-            if (getWorld().isClient()) return;
+            if (/*? if >=1.21.9 {*//*getEntityWorld()*//*?} else {*/getWorld()/*?}*/.isClient()) return;
 
             PlayerEntity player = (PlayerEntity) (Object) this;
             ItemStack stack = player.getStackInHand(hand);
@@ -59,10 +59,13 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     }
 
     @Unique private void finishOperation(CallbackInfoReturnable<ActionResult> cir, AbstractMinecartEntity minecart, ActionResult result) {
+        ServerWorld world = (ServerWorld) minecart./*? if >=1.21.9 {*//*getEntityWorld()*//*?} else {*/getWorld()/*?}*/;
+        if (world.isClient()) return;
+
         if (result.isAccepted()) {
-            ((ServerWorld) minecart.getWorld()).spawnParticles(ParticleTypes.HAPPY_VILLAGER, minecart.getX(), minecart.getY() + 0.2, minecart.getZ(), 10, 0.5, 0.5, 0.5, 0.5);
+            world.spawnParticles(ParticleTypes.HAPPY_VILLAGER, minecart.getX(), minecart.getY() + 0.2, minecart.getZ(), 10, 0.5, 0.5, 0.5, 0.5);
         } else {
-            ((ServerWorld) minecart.getWorld()).spawnParticles(ParticleTypes.ANGRY_VILLAGER, minecart.getX(), minecart.getY() + 0.2, minecart.getZ(), 10, 0.5, 0.5, 0.5, 0.5);
+            world.spawnParticles(ParticleTypes.ANGRY_VILLAGER, minecart.getX(), minecart.getY() + 0.2, minecart.getZ(), 10, 0.5, 0.5, 0.5, 0.5);
         }
         cir.setReturnValue(result);
     }
