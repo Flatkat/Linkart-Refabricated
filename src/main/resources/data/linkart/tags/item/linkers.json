@@ -1,6 +1,17 @@
 {
   "replace": false,
   "values": [
-    "minecraft:chain"
+    {
+      "id": "minecraft:chain",
+      "required": false
+    },
+    {
+      "id": "minecraft:iron_chain",
+      "required": false
+    },
+    {
+      "id": "#minecraft:chains",
+      "required": false
+    }
   ]
 }
