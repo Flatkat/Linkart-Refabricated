@@ -2,15 +2,13 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.github.vini2003.linkart.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "${java}",
   "mixins": [
     "AbstractMinecartEntityMixin",
     "EntityMixin",
     "MinecartAccessor",
     "PersistentStateAccessor",
     "PlayerEntityMixin"
-  ],
-  "client": [
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "linkart",
+  "id": "${id}",
   "version": "${version}",
-  "name": "Linkart Refabricated",
+  "name": "${name}",
   "description": "Link together minecarts with ease!",
   "authors": [
     "vini2003",
@@ -12,7 +12,7 @@
   ],
   "contributors": [
     "GeeTransit",
-    "ellellie"
+    "rosellle"
   ],
   "contact": {
     "sources": "https://github.com/melontini/Linkart"
@@ -31,7 +31,7 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": ">=1.21.1"
+    "minecraft": "${minecraft}"
   },
   "custom": {
     "loom:injected_interfaces": {
