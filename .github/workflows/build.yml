@@ -31,9 +31,9 @@ jobs:
         id: read_properties
         with:
             path: gradle.properties
-            properties: 'mod_version'
+            properties: 'mod.version'
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: linkart-refabricated-${{ steps.read_properties.outputs.mod_version }}+build.${{ github.run_number }}
+          name: linkart-refabricated-${{ steps.read_properties.outputs.mod-version }}+build.${{ github.run_number }}
           path: ${{ steps.find_jars.outputs.jars }}
