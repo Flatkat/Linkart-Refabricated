@@ -1,14 +1,14 @@
 package com.github.vini2003.linkart.mixin;
 
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.PersistentStateManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Map;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 
-@Mixin(PersistentStateManager.class)
+@Mixin(DimensionDataStorage.class)
 public interface PersistentStateAccessor {
-    @Accessor("loadedStates")
-    Map<String, PersistentState> linkart$loadedStates();
+    @Accessor("cache")
+    Map<String, SavedData> linkart$loadedStates();
 }

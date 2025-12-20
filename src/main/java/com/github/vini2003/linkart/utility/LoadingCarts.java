@@ -1,30 +1,30 @@
 package com.github.vini2003.linkart.utility;
 
+import com.github.vini2003.linkart.configuration.LinkartConfiguration;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collection;
 import java.util.List;
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtLong;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.server.world.ChunkTicketType;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.PersistentState;
-
 import java.util.HashSet;
 import java.util.Set;
 //? if >=1.21.5
-/*import net.minecraft.world.PersistentStateType;*/
+//import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.saveddata.SavedData;
 
-public class LoadingCarts extends PersistentState {
+public class LoadingCarts extends SavedData {
 
     /*? if <1.21.5*/
-    private static final Type<LoadingCarts> TYPE = new Type<>(LoadingCarts::new, (compound, lookup) -> new LoadingCarts().readNbt(compound), null);//thanks, FAPI
+    private static final Factory<LoadingCarts> TYPE = new Factory<>(LoadingCarts::new, (compound, lookup) -> new LoadingCarts().readNbt(compound), null);//thanks, FAPI
     /*? if >=1.21.5 {*/
     /*private static final Codec<LoadingCarts> CODEC = RecordCodecBuilder.create(
         instance -> instance.group(
@@ -32,17 +32,17 @@ public class LoadingCarts extends PersistentState {
         ).apply(instance, LoadingCarts::new)
     );
 
-    private static final PersistentStateType<LoadingCarts> TYPE = new PersistentStateType<LoadingCarts>(
+    private static final SavedDataType<LoadingCarts> TYPE = new SavedDataType<>(
         "linkart_loading_carts", LoadingCarts::new, CODEC, null
     );
     *//*?}*/
 
-    public static LoadingCarts getOrCreate(ServerWorld world) {
-        return world.getPersistentStateManager().getOrCreate(TYPE/*? if <1.21.5 {*/, "linkart_loading_carts"/*?}*/);
+    public static LoadingCarts getOrCreate(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage().computeIfAbsent(TYPE/*? if <1.21.5 {*/, "linkart_loading_carts"/*?}*/);
     }
 
     private final Set<BlockPos> chunksToReload = new HashSet<>();
-    private final Set<AbstractMinecartEntity> cartsToBlockPos = new HashSet<>();
+    private final Set<AbstractMinecart> cartsToBlockPos = new HashSet<>();
 
     public LoadingCarts() { this(List.of()); }
 
@@ -52,44 +52,46 @@ public class LoadingCarts extends PersistentState {
 
     /*? if <1.21.5 {*/
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        NbtList list = new NbtList();
-        for (AbstractMinecartEntity minecart : cartsToBlockPos) {
-            if (!minecart.isRemoved()) list.add(NbtLong.of(minecart.getBlockPos().asLong()));
+    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registryLookup) {
+        ListTag list = new ListTag();
+        for (AbstractMinecart minecart : cartsToBlockPos) {
+            if (!minecart.isRemoved()) list.add(LongTag.valueOf(minecart.blockPosition().asLong()));
         }
         nbt.put("chunksToSave", list);
         cartsToBlockPos.clear();
         return nbt;
     }
 
-    public LoadingCarts readNbt(NbtCompound nbt) {
-        NbtList list = nbt.getList("chunksToSave", NbtElement.LONG_TYPE);
-        for (NbtElement element : list) {
-            chunksToReload.add(BlockPos.fromLong(((NbtLong) element).longValue()));
+    public LoadingCarts readNbt(CompoundTag nbt) {
+        ListTag list = nbt.getList("chunksToSave", Tag.TAG_LONG);
+        for (Tag element : list) {
+            chunksToReload.add(BlockPos.of(((LongTag) element).getAsLong()));
         }
         return this;
     }
     /*?}*/
 
-    public void tick(ServerWorld world) {
+    public void tick(ServerLevel level) {
         if (!chunksToReload.isEmpty()) {
             for (BlockPos pos : chunksToReload) {
                 ChunkPos chunkPos = new ChunkPos(pos);
-                world.getChunkManager().addTicket(ChunkTicketType.PORTAL, chunkPos, 4/*? if <1.21.5 {*/, pos/*?}*/);
+                //? if <1.21.5 {
+                level.getChunkSource().addRegionTicket(TicketType.PORTAL, chunkPos, LinkartConfiguration.chunkloadingRadius, pos);
+                //?} else
+                //level.getChunkSource().addTicketWithRadius(TicketType.PORTAL, chunkPos, LinkartConfiguration.chunkloadingRadius);
             }
             chunksToReload.clear();
-            markDirty();
+            setDirty();
         }
     }
 
-
-    public void addCart(AbstractMinecartEntity cart) {
+    public void addCart(AbstractMinecart cart) {
         cartsToBlockPos.add(cart);
-        markDirty();
+        setDirty();
     }
 
-    public void removeCart(AbstractMinecartEntity cart) {
+    public void removeCart(AbstractMinecart cart) {
         cartsToBlockPos.remove(cart);
-        markDirty();
+        setDirty();
     }
 }

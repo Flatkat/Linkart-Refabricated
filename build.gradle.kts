@@ -18,18 +18,26 @@ val requiredJava = when {
 
 repositories {
     // MidnightLib
+    maven("https://api.modrinth.com/maven") { name = "Modrinth" }
     maven("https://maven.midnightdust.eu/releases") { name = "MidnightDust" }
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:${stonecutter.current.version}")
-    mappings("net.fabricmc:yarn:${property("deps.yarn")}:v2")
+    mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
 
-    val midnightlib = "eu.midnightdust:midnightlib:${property("deps.midnightlib")}"
+    val midnightlib = when {
+        stonecutter.current.parsed.eq("1.21.2") -> "maven.modrinth:midnightlib:${property("deps.midnightlib")}"
+        else -> "eu.midnightdust:midnightlib:${property("deps.midnightlib")}"
+    }
     modImplementation(midnightlib) { isTransitive = false }
     include(midnightlib)
+}
+
+stonecutter {
+    dependencies["midnightlib"] = property("deps.midnightlib") as String
 }
 
 loom {

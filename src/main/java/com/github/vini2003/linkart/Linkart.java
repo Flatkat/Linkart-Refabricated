@@ -9,11 +9,11 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +22,7 @@ public class Linkart implements ModInitializer {
     public static final String ID = "linkart";
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
-    public static final TagKey<Item> LINKERS = TagKey.of(itemKey(), Identifier./*? if =1.21.1 {*/of/*?}*//*? if >=1.21.4 {*//*tryParse*//*?}*/(ID, "linkers"));
+    public static final TagKey<Item> LINKERS = TagKey.create(itemKey(), ResourceLocation.fromNamespaceAndPath(ID, "linkers"));
 
     public void onInitialize() {
         MidnightConfig.init("linkart", LinkartConfiguration.class);
@@ -31,18 +31,18 @@ public class Linkart implements ModInitializer {
             LinkartCommand.register(dispatcher);
         });
 
-        ServerWorldEvents.LOAD.register((server, world) -> {
-            if (LinkartConfiguration.chunkloading) LoadingCarts.getOrCreate(world);
+        ServerWorldEvents.LOAD.register((server, level) -> {
+            if (LinkartConfiguration.chunkloading) LoadingCarts.getOrCreate(level);
         });
 
-        ServerTickEvents.START_WORLD_TICK.register(world -> {
-            if (LinkartConfiguration.chunkloading && ((PersistentStateAccessor) world.getPersistentStateManager()).linkart$loadedStates().containsKey("linkart_loading_carts")) {
-                LoadingCarts.getOrCreate(world).tick(world);
+        ServerTickEvents.START_WORLD_TICK.register(level -> {
+            if (LinkartConfiguration.chunkloading && ((PersistentStateAccessor) level.getDataStorage()).linkart$loadedStates().containsKey("linkart_loading_carts")) {
+                LoadingCarts.getOrCreate(level).tick(level);
             }
         });
     }
 
-    private static RegistryKey<? extends Registry<Item>> itemKey() {
-        return RegistryKey.ofRegistry(Identifier.tryParse("item"));
+    private static ResourceKey<? extends Registry<Item>> itemKey() {
+        return ResourceKey.createRegistryKey(ResourceLocation.tryParse("item"));
     }
 }

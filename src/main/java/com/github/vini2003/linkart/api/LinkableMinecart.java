@@ -1,24 +1,24 @@
 package com.github.vini2003.linkart.api;
 
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public interface LinkableMinecart {
 
-    default @Nullable AbstractMinecartEntity linkart$getFollowing() {
+    default @Nullable AbstractMinecart linkart$getFollowing() {
         throw new IllegalStateException("Implemented via mixin");
     }
 
-    default void linkart$setFollowing(AbstractMinecartEntity following) {
+    default void linkart$setFollowing(AbstractMinecart following) {
         throw new IllegalStateException("Implemented via mixin");
     }
 
-    default @Nullable AbstractMinecartEntity linkart$getFollower() {
+    default @Nullable AbstractMinecart linkart$getFollower() {
         throw new IllegalStateException("Implemented via mixin");
     }
 
-    default void linkart$setFollower(AbstractMinecartEntity follower) {
+    default void linkart$setFollower(AbstractMinecart follower) {
         throw new IllegalStateException("Implemented via mixin");
     }
 
@@ -29,6 +29,4 @@ public interface LinkableMinecart {
     default void linkart$setLinkItem(ItemStack linkItem) {
         throw new IllegalStateException("Implemented via mixin");
     }
-    //? if >=1.21.4
-    /*void dropStack(ItemStack itemStack);*/
 }

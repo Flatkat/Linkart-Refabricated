@@ -1,18 +1,19 @@
 package com.github.vini2003.linkart.utility;
 
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ItemStackParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import org.apache.logging.log4j.core.jmx.Server;
 
 public class CartUtils {
 
-    public static void spawnChainParticles(AbstractMinecartEntity entity) {
-        World world = entity./*? if >=1.21.9 {*//*getEntityWorld()*//*?} else {*/getWorld()/*?}*/;
-        if (!world.isClient()) {
-            ((ServerWorld) world).spawnParticles(new ItemStackParticleEffect(ParticleTypes.ITEM, entity.linkart$getLinkItem()), entity.getX(), entity.getY() + 0.3, entity.getZ(), 15, 0.2, 0.2, 0.2, 0.2);
+    public static void spawnChainParticles(AbstractMinecart entity) {
+        Level level = entity.level();
+        if (!level.isClientSide()) {
+            ((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, entity.linkart$getLinkItem()), entity.getX(), entity.getY() + 0.3, entity.getZ(), 15, 0.2, 0.2, 0.2, 0.2);
         }
     }
 
@@ -20,7 +21,7 @@ public class CartUtils {
         return Math.abs(0 - a) < 0.00029146489604938;
     }
 
-    public static void unlinkFromParent(AbstractMinecartEntity entity) {
+    public static void unlinkFromParent(AbstractMinecart entity) {
         if (entity == null) return;
         var following = entity.linkart$getFollowing();
         if (following == null) return;
@@ -28,22 +29,19 @@ public class CartUtils {
         following.linkart$setFollower(null);
         entity.linkart$setFollowing(null);
 
-        entity.setVelocity(0, 0, 0);
+        entity.setDeltaMovement(0, 0, 0);
 
         if (!entity.linkart$getLinkItem().isEmpty()) {
-            //? if >=1.21.9 {
-            /*entity.dropStack((ServerWorld) entity.getEntityWorld(), entity.linkart$getLinkItem());
-            *///?} elif >=1.21.4 {
-            /*entity.dropStack((ServerWorld) entity.getWorld(), entity.linkart$getLinkItem());
-            *///?} elif =1.21.1
-            entity.dropStack(entity.linkart$getLinkItem());
-            spawnChainParticles(entity);
+            //? if <=1.21.1 {
+            entity.spawnAtLocation(entity.linkart$getLinkItem());
+            //?} else
+            //entity.spawnAtLocation((ServerLevel) entity.level(), entity.linkart$getLinkItem());
         }
 
         entity.linkart$setLinkItem(ItemStack.EMPTY);
     }
 
-    public static void linkTo(AbstractMinecartEntity minecart, AbstractMinecartEntity to, ItemStack linkingItem) {
+    public static void linkTo(AbstractMinecart minecart, AbstractMinecart to, ItemStack linkingItem) {
         minecart.linkart$setFollowing(to);
         to.linkart$setFollower(minecart);
 
