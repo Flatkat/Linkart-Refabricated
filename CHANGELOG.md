@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Added support for 1.21.6-1.21.10
-- Updated Stonecutter to 0.7.10
+- Added support for 1.12.2, 1.12.3, and 1.21.6-1.21.11.
+- Updated Fabric Loader dependency to 0.18.3.
+- Updated Stonecutter to 0.8-alpha.14.
 
 ## [6.1.1] - 2025-5-18
 
