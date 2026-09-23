@@ -30,12 +30,15 @@
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
-    "fabric": "*",
+    "fabric-api": "*",
     "minecraft": "${minecraft}"
   },
   "custom": {
     "loom:injected_interfaces": {
       "net/minecraft/class_1688": [
+        "com/github/vini2003/linkart/api/LinkableMinecart"
+      ],
+      "net/minecraft/world/entity/vehicle/minecart/AbstractMinecart": [
         "com/github/vini2003/linkart/api/LinkableMinecart"
       ]
     }

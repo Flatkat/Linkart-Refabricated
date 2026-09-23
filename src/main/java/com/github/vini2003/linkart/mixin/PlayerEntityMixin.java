@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,7 +30,10 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @Unique private CartOperation operation;
 
     @Inject(at = @At("HEAD"), method = "interactOn", cancellable = true)
+    //? if <26.1 {
     void onInteract(Entity entity, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    //? } else
+    //void onInteract(Entity entity, InteractionHand hand, Vec3 location, CallbackInfoReturnable<InteractionResult> cir) {
         if (entity instanceof AbstractMinecart minecart) {
             if(level().isClientSide()) return;
 

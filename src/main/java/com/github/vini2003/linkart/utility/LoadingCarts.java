@@ -1,5 +1,6 @@
 package com.github.vini2003.linkart.utility;
 
+import com.github.vini2003.linkart.Linkart;
 import com.github.vini2003.linkart.configuration.LinkartConfiguration;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -8,7 +9,8 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 //? if >=1.21.5
-//import net.minecraft.world.level.saveddata.SavedDataType;
+//import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -32,9 +34,16 @@ public class LoadingCarts extends SavedData {
         ).apply(instance, LoadingCarts::new)
     );
 
+    //? if <26.1 {
     private static final SavedDataType<LoadingCarts> TYPE = new SavedDataType<>(
         "linkart_loading_carts", LoadingCarts::new, CODEC, null
     );
+    //? } else {
+    /^private static final SavedDataType<LoadingCarts> TYPE = new SavedDataType<>(
+            ResourceLocation.fromNamespaceAndPath(Linkart.ID, "loading_carts"),
+            LoadingCarts::new, CODEC, null
+    );
+    ^///? }
     *//*?}*/
 
     public static LoadingCarts getOrCreate(ServerLevel serverLevel) {
@@ -74,7 +83,11 @@ public class LoadingCarts extends SavedData {
     public void tick(ServerLevel level) {
         if (!chunksToReload.isEmpty()) {
             for (BlockPos pos : chunksToReload) {
+                //? if <26.1 {
                 ChunkPos chunkPos = new ChunkPos(pos);
+                //? } else {
+                /*ChunkPos chunkPos = ChunkPos.containing(pos);
+                *///? }
                 //? if <1.21.5 {
                 level.getChunkSource().addRegionTicket(TicketType.PORTAL, chunkPos, LinkartConfiguration.chunkloadingRadius, pos);
                 //?} else

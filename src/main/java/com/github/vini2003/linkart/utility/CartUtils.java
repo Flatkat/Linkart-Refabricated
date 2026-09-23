@@ -13,7 +13,10 @@ public class CartUtils {
     public static void spawnChainParticles(AbstractMinecart entity) {
         Level level = entity.level();
         if (!level.isClientSide()) {
+            //? if <26.1 {
             ((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, entity.linkart$getLinkItem()), entity.getX(), entity.getY() + 0.3, entity.getZ(), 15, 0.2, 0.2, 0.2, 0.2);
+            //? } else
+            //((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, entity.linkart$getLinkItem().getItem()), entity.getX(), entity.getY() + 0.3, entity.getZ(), 15, 0.2, 0.2, 0.2, 0.2);
         }
     }
 
