@@ -8,9 +8,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
+import net.minecraft.resources.ResourceLocation;
 //? if >=1.21.5
-//import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.saveddata.SavedDataType;
+//import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
