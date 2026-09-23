@@ -1,18 +1,15 @@
 plugins {
-    id("fabric-loom")
-
-    // `maven-publish`
-    // id("me.modmuss50.mod-publish-plugin")
+    id("dev.kikugie.loom-back-compat")
 }
 
-version = "${property("mod.version")}+${property("mod.mc_title")}"
+version = "${property("mod.version")}+${sc.current.version}"
 base.archivesName = property("mod.id") as String
 
-val requiredJava = when {
-    stonecutter.eval(stonecutter.current.version, ">=26.1") -> JavaVersion.VERSION_25
-    stonecutter.eval(stonecutter.current.version, ">=1.20.6") -> JavaVersion.VERSION_21
-    stonecutter.eval(stonecutter.current.version, ">=1.18") -> JavaVersion.VERSION_17
-    stonecutter.eval(stonecutter.current.version, ">=1.17") -> JavaVersion.VERSION_16
+val requiredJava: JavaVersion = when {
+    sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
+    sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
+    sc.current.parsed >= "1.18" -> JavaVersion.VERSION_17
+    sc.current.parsed >= "1.17" -> JavaVersion.VERSION_16
     else -> JavaVersion.VERSION_1_8
 }
 
@@ -24,7 +21,8 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:${stonecutter.current.version}")
-    mappings(loom.officialMojangMappings())
+    loomx.applyMojangMappings()
+
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
 
@@ -42,19 +40,18 @@ stonecutter {
 
 loom {
     fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json") // Useful for interface injection
-//  accessWidenerPath = rootProject.file("src/main/resources/template.accesswidener")
 
     decompilerOptions.named("vineflower") {
         options.put("mark-corresponding-synthetics", "1") // Adds names to lambdas - useful for mixins
     }
 
     runConfigs.all {
-        ideConfigGenerated(true)
-        vmArgs("-Dmixin.debug.export=true") // Exports transformed classes for debugging
-        runDir = "../../run" // Shares the run directory between versions
+        preferGradleTask = true
+        generateRunConfig = true
+        runDirectory = rootProject.file("run")
+        jvmArguments.add("-Dmixin.debug.export=true") // Exports transformed classes for debugging
     }
 }
-
 
 java {
     withSourcesJar()
@@ -64,19 +61,19 @@ java {
 
 tasks {
     processResources {
-        inputs.property("id", project.property("mod.id"))
-        inputs.property("name", project.property("mod.name"))
-        inputs.property("version", project.property("mod.version"))
-        inputs.property("minecraft", project.property("mod.mc_dep"))
-        inputs.property("loader_version", project.property("deps.fabric_loader"))
+        fun MutableMap<String, String>.register(key: String, property: String) {
+            val value: String = sc.properties[property]
+            inputs.property(key, value)
+            set(key, value)
+        }
 
-        val props = mapOf(
-            "id" to project.property("mod.id"),
-            "name" to project.property("mod.name"),
-            "version" to project.property("mod.version"),
-            "minecraft" to project.property("mod.mc_dep"),
-            "loader_version" to project.property("deps.fabric_loader")
-        )
+        val props = buildMap {
+            register("id", "mod.id")
+            register("name", "mod.name")
+            register("version", "mod.version")
+            register("minecraft", "mod.mc_dep")
+            register("loader_version", "deps.fabric_loader")
+        }
 
         filesMatching("fabric.mod.json") { expand(props) }
 
@@ -84,10 +81,17 @@ tasks {
         filesMatching("*.mixins.json") { expand("java" to mixinJava) }
     }
 
+    withType<Jar> {
+        val name = project.property("mod.id") as String
+        inputs.property("mod_id", name)
+        from("../../LICENSE") { rename { "$it-$name" } }
+    }
+
     register<Copy>("buildAndCollect") {
         group = "build"
-        from(remapJar.map { it.archiveFile }, remapSourcesJar.map { it.archiveFile })
+
+        inputs.property("version", project.property("mod.version"))
+        from(loomx.modJar.flatMap { it.archiveFile }, loomx.modSourcesJar.flatMap { it.archiveFile })
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
-        dependsOn("build")
     }
 }

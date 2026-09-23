@@ -1,13 +1,15 @@
 pluginManagement {
     repositories {
         maven("https://maven.fabricmc.net/") { name = "Fabric" }
+        maven("https://maven.kikugie.dev/releases") { name = "KikuGie Releases" }
         maven("https://maven.kikugie.dev/snapshots") { name = "KikuGie Snapshots" }
         gradlePluginPortal()
     }
 }
 
 plugins {
-  id("dev.kikugie.stonecutter") version "0.8-alpha.14"
+    id("dev.kikugie.stonecutter") version "0.9.8"
+    id("dev.kikugie.loom-back-compat") version "0.4.2"
 }
 
 stonecutter {
